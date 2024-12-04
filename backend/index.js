@@ -8,6 +8,7 @@ const cookies = require("cookie-parser");
 const {connectDb} = require('./db/db');
 
 
+const captainRoute = require("./routes/captain.route");
 const userRoute = require("./routes/user.route");
 
 const app = express();
@@ -22,6 +23,7 @@ connectDb();
 
 
 app.use("/user" , userRoute);
+app.use("/captain" , captainRoute);
 
 app.get("/home" , (req, res) => {
     res.send("Hello World");
