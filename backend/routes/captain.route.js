@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {body} = require("express-validator");
 const captainController = require("../controllers/captainController");
+const { captainAuthMiddleware } = require("../middlewares/auth.middleware");
+const blacklistToken = require("../models/blacklistToken.model");
 
 
 router.post('/register', [
@@ -22,5 +24,18 @@ router.post("/login", [
 ],
     captainController.login 
 )
+
+router.get("/getCaptain" , captainAuthMiddleware , (req , res) => {
+    res.send(req.captain);
+})
+
+router.get("/logout" , captainAuthMiddleware , (req , res) => {
+    res.clearCookie("token");
+
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+
+    blacklistToken.create({token});
+    res.send("Logged out successfully");
+})
 
 module.exports = router;

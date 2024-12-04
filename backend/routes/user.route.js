@@ -26,9 +26,6 @@ router.get("/logout" , authMiddleware , async (req , res) => {
 
     await blacklistToken.create({token});
 
-
-
-
     res.send("Logged out successfully");
 })
 
