@@ -30,16 +30,20 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.methods.generateAuthToken = () => {
+userSchema.methods.generateAuthToken = function () {
     const token = jwt.sign({_id:this._id} , process.env.JWT_SECRET);
     return token;
 }
 
-userSchema.methods.comparePassword = async (password) => {
-    await bcrypt.compare(password , this.password);
-}
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    if (!candidatePassword || !this.password) {
+        throw new Error("Invalid arguments for password comparison");
+    }
+    return await bcrypt.compare(candidatePassword, this.password);
+};
 
-userSchema.statics.hashPassword = async (password) => {
+
+userSchema.statics.hashPassword = async function (password){
     return await bcrypt.hash(password , 10);
 }
 

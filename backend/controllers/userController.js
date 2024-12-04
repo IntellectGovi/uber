@@ -3,7 +3,6 @@ const {createUser} = require("../services/user.services");
 const {validationResult} = require("express-validator");
 const register = async (req , res) => {
     try {
-        console.log("Console from the register route" , req.body);
 
         const errors = validationResult(req);
 
@@ -13,7 +12,6 @@ const register = async (req , res) => {
  
 
         const {fullName , email , password} = req.body;
-        console.log("console log from the register01 route",fullName , email , password) 
 
         const hashedPassword = await userModel.hashPassword(password);
 
@@ -35,4 +33,44 @@ const register = async (req , res) => {
     }
 }
 
-module.exports = {register};
+const login = async(req , res) => {
+    try {
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors:errors.array()});
+        }
+        const {email , password} = req.body;
+        const existingUser = await userModel.findOne({email}).select("+password");
+        
+        if (!password || !existingUser.password) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+        
+
+        if(!existingUser){
+            return res.status(400).json({error:"User does not exist"});
+        }
+    
+        const isPasswordCorrect = await existingUser.comparePassword(password);
+        if(!isPasswordCorrect){
+            return res.status(401).json({
+                error:"Password is incorrect please enter valid credentials",
+            })
+        }
+    
+        const token = existingUser.generateAuthToken();
+    
+        return res.status(200).json({
+            success:true,
+            user:existingUser,
+            token
+        })
+    } catch (error) {
+        console.log(error)
+    }
+
+
+}
+
+module.exports = {register , login};
