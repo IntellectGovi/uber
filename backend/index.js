@@ -4,6 +4,7 @@ dotenv.config();
 
 const cors = require('cors');
 const express = require('express');
+const cookies = require("cookie-parser");
 const {connectDb} = require('./db/db');
 
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+app.use(cookies());
 
 connectDb();
 

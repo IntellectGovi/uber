@@ -42,7 +42,7 @@ const login = async(req , res) => {
         }
         const {email , password} = req.body;
         const existingUser = await userModel.findOne({email}).select("+password");
-        
+
         if (!password || !existingUser.password) {
             return res.status(400).json({ error: "Invalid credentials" });
         }
@@ -60,6 +60,8 @@ const login = async(req , res) => {
         }
     
         const token = existingUser.generateAuthToken();
+        
+        res.cookie("token" , token);
     
         return res.status(200).json({
             success:true,
