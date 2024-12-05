@@ -17,7 +17,7 @@ const UserRegister = () => {
 
 
 
-  const { user, setUser } = useContext(UserDataContext)
+  const { user, setUser } = React.useContext(UserDataContext)
 
 
 
@@ -25,13 +25,34 @@ const UserRegister = () => {
   const submitHandler = async (e) => {
     e.preventDefault()
     const newUser = {
-      fullname: {
-        firstname: firstName,
-        lastname: lastName
+      fullName: {
+        firstName: firstName,
+        lastName: lastName
       },
       email: email,
       password: password
     }
+
+    try {
+      const result = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser);
+
+      if(result.status === 200) {
+        const data = result.data;
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+
+
+    } catch (error) {
+      console.log(error)
+    }
+
+
+    setEmail('')
+    setPassword('')
+    setFirstName('')
+    setLastName('')
   }
   return (
     <div>

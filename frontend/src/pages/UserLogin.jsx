@@ -20,6 +20,25 @@ const UserLogin = () => {
       email: email,
       password: password
     }
+    console.log(userData);
+
+    try {
+      const result = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, userData);
+
+      if(result.status === 200) {
+        const data = result.data;
+        
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+
+    setEmail('')
+    setPassword('')
   }
 
   return (

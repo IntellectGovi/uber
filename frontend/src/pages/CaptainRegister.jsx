@@ -39,7 +39,20 @@ const CaptainRegister = () => {
       }
     }
 
-    
+    try {
+      const result = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/register`, captainData);
+    } catch (error) {
+      console.log(error)
+    }
+
+    setEmail('')
+    setPassword('')
+    setFirstName('')
+    setLastName('')
+    setVehicleColor('')
+    setVehiclePlate('')
+    setVehicleCapacity('')
+    setVehicleType('')
 
   }
   return (
